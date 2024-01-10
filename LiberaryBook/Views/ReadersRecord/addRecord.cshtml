@@ -1,0 +1,111 @@
+﻿@model AddRecordViewModel;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+            /* Optionally, you can style the dropdown arrow */
+            select::-ms-expand {
+                display: none;
+            }
+
+        select {
+            appearance: none;
+            background: transparent url('path-to-dropdown-arrow.png') no-repeat right center;
+            background-size: 20px; /* Adjust the size as needed */
+            cursor: pointer;
+        }
+    </style>
+    <title>Add Book</title>
+</head>
+<body>
+    <h2 class="mt-3">Add New Reader</h2>
+
+    <form asp-action="addRecord" enctype="multipart/form-data" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <label for="title">Liberary Id:</label>
+        <input asp-for="LiberaryID" type="text"><br>
+        <span asp-validation-for="LiberaryID" class="text-danger"></span>
+
+        <label for="author">No Of Violations:</label>
+        <input asp-for="NoOfViolations" type="text"><br>
+        <span asp-validation-for="NoOfViolations" class="text-danger"></span>
+
+        <label for="bookId">Book:</label>
+        <select asp-for="BookId" asp-items="@(new SelectList(ViewBag.Books, "Id", "Name"))">
+            <option value="">Select a book</option>
+        </select>
+        <span asp-validation-for="BookId" class="text-danger"></span>
+
+
+
+        <label for="borrowedBooks">ReturnDeadLine:</label>
+        <input asp-for="ReturnDeadLine" type="date"><br>
+        <span asp-validation-for="ReturnDeadLine" class="text-danger"></span>
+
+
+        <label for="availableBooks">Approve Return Request:</label>
+        <input asp-for="ApproveReturnRequest" type="number"><br>
+        <span asp-validation-for="ApproveReturnRequest" class="text-danger"></span>
+
+        <button type="submit">Add Reader</button>
+    </form>
+</body>
+</html>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}
+

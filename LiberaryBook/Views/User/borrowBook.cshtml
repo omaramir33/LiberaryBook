@@ -1,0 +1,134 @@
+﻿@model borrowBookViewModel ;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #f4f4f4; /* Light gray background color */
+        }
+
+        form {
+            max-width: 400px; /* Set a maximum width for the form */
+            margin: 0 auto; /* Center the form horizontally */
+            background-color: #fff; /* White background for the form */
+            padding: 20px;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select, button {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+
+        .logout-button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #e74c3c; /* Red background color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b; /* Darker red on hover */
+        }
+
+         .logout-button {
+            display: block;
+            margin-top: 20px;
+            padding: 8px 16px; /* Smaller padding for the button */
+            background-color: #e74c3c; /* Red background color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b; /* Darker red on hover */
+        }
+    </style>
+    <title>Book Management</title>
+</head>
+<body>
+
+<form asp-action="borrowBook" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <label for="Id">Select a Book:</label>
+    <select asp-for="Id" asp-items="@(new SelectList(ViewBag.books, "Id", "Title"))">
+        <option value="">Select a book</option>
+    </select>
+    <span asp-validation-for="Id" class="text-danger"></span>
+
+    <button  type="submit">Borrow Book</button>
+</form>
+
+
+    <div>
+        <button class="mt-5 logout-button" onclick="logout()">Log Out</button>
+    </div>
+
+</body>
+</html>
+
+@section scripts{
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+<script>
+    function logout() {
+        $.ajax({
+            type: 'GET',
+            url: '/BookInventory/LogOut',
+            success: function (data) {
+                // Handle success, if needed
+                console.log('Logout successful');
+                window.location.href = data.url;
+
+            },
+            error: function (error) {
+                // Handle error, if needed
+                console.error('Logout failed', error);
+            }
+        });
+    }
+</script>
+
+}

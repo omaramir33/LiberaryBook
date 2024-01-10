@@ -1,0 +1,216 @@
+﻿@model List<BookViewModel> ;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 75%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: inline-block;
+            padding: 10px 20px; /* Adjust padding for button size */
+            box-sizing: border-box;
+            text-decoration: none; /* Remove underline */
+            background-color: #3498db; /* Blue background color */
+            color: white; /* White text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;
+            font-size: 16px; /* Adjust font size */
+            transition: background-color 0.3s; /* Add smooth transition */
+        }
+
+        .add-book-button {
+            display: inline-block;
+            padding: 8px 16px; /* Adjust padding for button-like appearance */
+            box-sizing: border-box;
+            text-decoration: none; /* Remove underline */
+            /* Customize button styles */
+            background-color: #4caf50; /* Green background color */
+            color: white; /* White text color */
+            border: none; /* No border */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer;
+        }
+
+            /* Add hover effect */
+            .add-book-button:hover {
+                background-color: #45a049; /* Darker green on hover */
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .remove-button {
+            display: inline-block;
+            padding: 6px 10px;
+            background-color: #fff; /* White background */
+            color: #ff0000; /* Red text color */
+            border: 1px solid #000; /* Black border */
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center; /* Center the text horizontally */
+            line-height: normal; /* Center the text vertically */
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search books...">
+
+        <a href="@Url.Action("borrowBook", "User")" class="add-book-button">Borrow Book</a>
+    </div>
+
+    <table id="bookTable">
+        <thead class="text-center">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Total Inventory</th>
+                <th>Borrowed Books</th>
+                <th>Avilable Books</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @foreach (var item in Model)
+            {
+                <tr data-book-id="@item.Id">
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.Author</td>
+                    <td>@item.TotalInvetory</td>
+                    <td>@item.BorrowedBook</td>
+                    <td>@item.AvilableBook</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <button class="mt-5" onclick="logout()">Log Out</button>
+    </div>
+
+</body>
+</html>
+
+@section scripts{
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    function removeBook(bookId) {
+        var row = $("button[data-book-id='" + bookId + "']").closest('tr');
+
+        $.ajax({
+            type: "POST",
+            url: "/BookInventory/removeBook",
+            data: { Id: bookId },
+            dataType: "json",
+            success: function (result) {
+                console.log("Remove successful: " + result);
+
+                if (result.success) {
+                    row.remove();
+                } else {
+                    console.log("Failed to remove book: " + result.message);
+                }
+            },
+            error: function (error) {
+                console.log("Ajax error: " + error);
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Set a delay time (e.g., 600 milliseconds) to wait for user input
+        var delay = 600;
+        var timeoutId;
+
+        // Bind the input event to trigger the AJAX call with debounce
+        $('#searchInput').on('input', function () {
+            clearTimeout(timeoutId);
+
+            // Set a new timeout
+            timeoutId = setTimeout(function () {
+                var searchText = $('#searchInput').val();
+                $.ajax({
+                        url: '/User/books',
+                    type: 'GET',
+                    data: { book: searchText },
+                    success: function (data) {
+                        // Get the content of tbody from the returned data
+                        var tbodyContent = $(data).find('#bookTable tbody').html();
+
+                        // Update only the tbody section of the table
+                        $('#bookTable tbody').html(tbodyContent);
+                    },
+                    error: function (error) {
+                        console.error('Error during AJAX request:', error);
+                    }
+                });
+            }, delay);
+        });
+    });
+</script>
+
+
+<script>
+    function logout() {
+        $.ajax({
+            type: 'GET',
+            url: '/BookInventory/LogOut',
+            success: function (data) {
+                // Handle success, if needed
+                console.log('Logout successful');
+                window.location.href = data.url;
+
+            },
+            error: function (error) {
+                // Handle error, if needed
+                console.error('Logout failed', error);
+            }
+        });
+    }
+</script>
+
+}
+

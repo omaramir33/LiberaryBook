@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Liberary Page";
+}
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Page</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .center-text {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+        }
+
+            .button-row a {
+                display: inline-block;
+                padding: 10px 20px;
+                margin: 0 10px;
+                text-decoration: none;
+                color: #000; /* Text color */
+                background-color: #8F9779; /* Mint green background */
+                border: 1px solid #000; /* Black border */
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+
+                .button-row a:hover {
+                    background-color: #76e176; /* Darker mint green on hover */
+                }
+
+        footer {
+            margin-top: auto; /* Push the footer to the bottom of the page */
+            padding: 10px;
+            color: #000; /* Text color */
+            background-color: #8F9779; /* Mint green background */
+            border: 1px solid #000; /* Black border */
+            display: flex;
+            justify-content: flex-start; /* Align items to the left */
+            align-items: center; /* Center items vertically */
+        }
+
+        .logout-button {
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+    </style>
+
+</head>
+<div class="center-text mb-3 mt-5">
+    <h1>Please select an option</h1>
+</div>
+
+<div class="button-row mt-4">
+    <a href="@Url.Action("Index", "BookInventory")">Edit Book Record</a>
+    <a href="@Url.Action("Index", "ReadersRecord")">Edit Reader's records'</a>
+</div>
+
+<div class="button-row mt-5">
+    <a href="#" onclick="logout()" class="logout-button">Logout</a>
+</div>
+    <!-- Add other footer content as needed -->
+
+@section scripts {
+    <script>
+        function logout() {
+            $.ajax({
+                type: 'GET',
+                url: '/Liberary/LogOut',
+                success: function (data) {
+                    // Handle success, if needed
+                    console.log('Logout successful');
+                    window.location.href = data.url;
+
+                },
+                error: function (error) {
+                    // Handle error, if needed
+                    console.error('Logout failed', error);
+                }
+            });
+        }
+    </script>
+}
